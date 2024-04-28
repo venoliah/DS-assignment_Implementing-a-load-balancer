@@ -22,34 +22,36 @@ The use of multiple server instances likely helped distribute the load and handl
 ![Screenshot 3](https://res.cloudinary.com/dwh98o938/image/upload/v1714337745/Screenshot_2024-04-28_at_11.14.31_PM_gc5foa.png)
 
 
-## Task Description (A-2:)
+### Task Description (A-2:)
 Increment N from 2 to 6 and launch 10,000 requests on each such increment. Report the average load of the servers at each run in a line chart.
 
 ![Screenshot 4](https://res.cloudinary.com/dwh98o938/image/upload/v1714337745/Screenshot_2024-04-28_at_11.36.50_PM_z7nwpj.png)
 
+
+
 ![Screenshot 5](https://res.cloudinary.com/dwh98o938/image/upload/v1714337746/Screenshot_2024-04-28_at_11.23.56_PM_a69krh.png)
 
-## Calculating Average Load
+### Calculating Average Load
 
-### Total Time and Response Time per Request
+###$ Total Time and Response Time per Request
 - For N = 2: Total time taken (T_2) = 131.91 seconds
 - For N = 6: Total time taken (T_6) = 220.96 seconds
 - Number of requests (R) = 10,000
 
-### Average Response Time per Request (RT)
+#### Average Response Time per Request (RT)
 - For N = 2: RT_2 = T_2 / R = 131.91 / 10000 = 0.013191 seconds/request
 - For N = 6: RT_6 = T_6 / R = 220.96 / 10000 = 0.022096 seconds/request
 
-## Interpretation and Discussion
+### Interpretation and Discussion
 
-### Average Load Analysis
+#### Average Load Analysis
 - RT_2 = 0.013191 seconds/request (N = 2)
 - RT_6 = 0.022096 seconds/request (N = 6)
 
-### Scalability Implications
+#### Scalability Implications
 - **Increase in Response Time:** The average response time per request (RT) increases significantly when N is scaled up from 2 to 6.
 
-### Effect on Load Balancing
+#### Effect on Load Balancing
 - With N = 2, the load balancer achieves a lower average response time per request, indicating efficient load distribution across fewer server containers.
 - However, with N = 6, the average response time per request increases, suggesting potential challenges in maintaining performance and load balance across a larger number of server containers.
   
