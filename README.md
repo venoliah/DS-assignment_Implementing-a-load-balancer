@@ -22,6 +22,7 @@ The use of multiple server instances likely helped distribute the load and handl
 ![Screenshot 3](https://res.cloudinary.com/dwh98o938/image/upload/v1714337745/Screenshot_2024-04-28_at_11.14.31_PM_gc5foa.png)
 
 
+
 ### Task Description (A-2:)
 Increment N from 2 to 6 and launch 10,000 requests on each such increment. Report the average load of the servers at each run in a line chart.
 
@@ -56,3 +57,33 @@ Increment N from 2 to 6 and launch 10,000 requests on each such increment. Repor
 - However, with N = 6, the average response time per request increases, suggesting potential challenges in maintaining performance and load balance across a larger number of server containers.
   
 ![Screenshot 6](https://res.cloudinary.com/dwh98o938/image/upload/v1714337746/Screenshot_2024-04-28_at_11.36.27_PM_fmtuhz.png)
+
+
+
+### Task Description (A-4):
+Launch 10,000 async requests on N = 3 server containers and report the request count handled by each server instance in a bar chart.
+
+![Screenshot 7](https://res.cloudinary.com/dwh98o938/image/upload/v1714338774/Screenshot_2024-04-29_at_12.12.16_AM_q5wiba.png)
+
+
+
+![Screenshot 8](https://res.cloudinary.com/dwh98o938/image/upload/v1714337745/Screenshot_2024-04-28_at_10.58.44_PM_s3vvko.png)
+
+### Performance Evaluation
+
+#### Average Response Time:
+Calculate the average response time per request (RT) based on the reported total time taken (T) and number of requests (R):
+Average Response Time (RT): RT = T / R
+For example, with T = 214.74 seconds and R = 10,000 requests:
+RT = 214.74 seconds / 10,000 requests = 0.021474 seconds/request (or 21.47 milliseconds/request)
+
+#### Scalability and Concurrency:
+Assess the impact of using multiple server instances (N = 3) on system scalability and responsiveness:
+
+#### Concurrency and Scaling:
+Evaluate how the use of multiple server instances distributes the load and enhances the system's ability to handle concurrent requests efficiently.
+Consider the benefits of increased scalability and responsiveness achieved through load distribution among server instances.
+
+![Screenshot 9](https://twitter.com/Limorio_/status/1784691656643510564?t=aY-WJCk6Z1CIa-S-58ptGQ&s=19)
+
+
