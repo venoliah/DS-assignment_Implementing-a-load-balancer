@@ -60,7 +60,7 @@ Increment N from 2 to 6 and launch 10,000 requests on each such increment. Repor
 
 
 
-### Task Description (A-4):
+### Task Description (A-4)/(A-1):
 Launch 10,000 async requests on N = 3 server containers and report the request count handled by each server instance in a bar chart.
 
 ![Screenshot 7](https://res.cloudinary.com/dwh98o938/image/upload/v1714338774/Screenshot_2024-04-29_at_12.12.16_AM_q5wiba.png)
@@ -87,3 +87,33 @@ Consider the benefits of increased scalability and responsiveness achieved throu
 ![Screenshot 9](https://res.cloudinary.com/dwh98o938/image/upload/v1714338774/Screenshot_2024-04-29_at_12.09.26_AM_tbmzlz.png)
 
 
+### Task Description (A-4)/(A-2:)
+Increment N from 2 to 6 and launch 10,000 requests on each such increment. Report the average load of the servers at each run in a line chart.
+
+![Screenshot 10](https://res.cloudinary.com/dwh98o938/image/upload/v1714340292/Screenshot_2024-04-29_at_12.11.44_AM_jnyhfu.png)
+
+
+
+![Screenshot 11](https://res.cloudinary.com/dwh98o938/image/upload/v1714337746/Screenshot_2024-04-28_at_11.23.56_PM_a69krh.png)
+
+####Calculating Average Load:
+Total Time and Response Time per Request:
+For N = 2: Total time taken (T_2) = 113.73 seconds
+For N = 6: Total time taken (T_6) = 210.81 seconds
+Number of requests (R) = 10,000
+
+####Average Response Time per Request (RT):
+Calculate the average response time per request for each scenario:
+For N = 2: RT_2 = T_2 / R = 113.73 / 10000 = 0.011373 seconds/request
+For N = 6: RT_6 = T_6 / R = 210.81 / 10000 = 0.021081 seconds/request
+  
+![Screenshot 12](https://res.cloudinary.com/dwh98o938/image/upload/v1714340293/Screenshot_2024-04-29_at_12.17.26_AM_wqraah.png)
+
+Observations and Scalability Analysis:
+Graph Interpretation:
+The line chart displays the average response time per request (RT) as the number of server containers (N) increases from 2 to 6.
+Evaluate the trend in average response times across different values of N to assess scalability.
+Scalability Assessment:
+Based on the graph and calculated average response times:
+Increasing Load: As N increases, the average response time per request (RT) tends to increase.
+Performance Impact: The observed increase in response time with higher N values suggests potential scalability limitations or inefficiencies in load distribution.
