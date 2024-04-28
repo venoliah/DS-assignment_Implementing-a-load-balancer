@@ -84,6 +84,6 @@ Assess the impact of using multiple server instances (N = 3) on system scalabili
 Evaluate how the use of multiple server instances distributes the load and enhances the system's ability to handle concurrent requests efficiently.
 Consider the benefits of increased scalability and responsiveness achieved through load distribution among server instances.
 
-![Screenshot 9](https://twitter.com/Limorio_/status/1784691656643510564?t=aY-WJCk6Z1CIa-S-58ptGQ&s=19)
+![Screenshot 9](https://res.cloudinary.com/dwh98o938/image/upload/v1714338774/Screenshot_2024-04-29_at_12.09.26_AM_tbmzlz.png)
 
 
