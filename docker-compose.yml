@@ -1,0 +1,52 @@
+services:
+  load_balancer:
+    build:
+      context: ./load_balancer
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - server1
+      - server2
+      - server3
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - app_network
+      
+  server1:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    environment:
+      - SERVER_ID=1
+    networks:
+      - app_network
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  server2:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    environment:
+      - SERVER_ID=2
+    networks:
+      - app_network
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  server3:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    environment:
+      - SERVER_ID=3
+    networks:
+      - app_network
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  app_network:
+    driver: bridge
