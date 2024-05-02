@@ -18,24 +18,24 @@ def hash_virtual_server(server_id, virtual_server_id):
 # consistent_hash.py
 
 class ConsistentHashMap:
-    def _init_(self):
+    def __init__(self):
         self.hash_map = [[[] for _ in range(NUM_SLOTS)]]
         self.servers = {}  # {server_id: (container_name, [virtual_server_slots])}
 
-    def add_server(self, server_id, container_name):
+    def add_server(self, server_id, container_name, container_port):
         """
         Add a new server to the consistent hash map.
-
         Args:
             server_id (int): The unique identifier for the server.
             container_name (str): The name of the Docker container for the server.
+            container_port (int): The port number on which the server is running.
         """
         virtual_server_slots = []
         for virtual_server_id in range(NUM_VIRTUAL_SERVERS):
             slot = hash_virtual_server(server_id, virtual_server_id)
             self.hash_map[0][slot].append((server_id, container_name))
             virtual_server_slots.append(slot)
-        self.servers[server_id] = (container_name, virtual_server_slots)
+        self.servers[server_id] = (container_name, virtual_server_slots, container_port)
 
     def remove_server(self, server_id):
         """
@@ -89,4 +89,4 @@ class ConsistentHashMap:
         """
         print("Servers:")
         for server_id, (server_name, virtual_server_slots, server_port) in self.servers.items():
-            print(f"Server ID: {server_id}, Server Name: {server_name}, Server Port: {server_port}")
+            print(f"Server ID: {server_id}, Server Name: {server_name}, Server Port: {server_port}")

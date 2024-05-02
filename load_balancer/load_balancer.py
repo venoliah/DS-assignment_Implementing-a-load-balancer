@@ -22,9 +22,8 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # ... (existing code) ...
-
 # Retrieve the server instances created by Docker Compose
-network_name = os.environ.get("COMPOSE_PROJECT_NAME", "teste") + "_app_network"
+network_name = os.environ.get("COMPOSE_PROJECT_NAME", "ds-assignment_implementing-a-load-balancer") + "_app_network"
 logging.info(f'Retrieving server instances from network: {network_name}')
 server_containers = docker_client.containers.list(filters={'network': network_name})
 logging.info(f'Found {len(server_containers)} instances: {[container.name for container in server_containers]}')
@@ -135,3 +134,130 @@ async def add_replicas(payload: dict):
             ports={'4000/tcp': None}  # Use dynamic port mapping for port 3000
         )
         new_container.start()
+
+        # Get the assigned host port for the new container
+        host_port = new_container.attrs['NetworkSettings']['Ports']['3000/tcp'][0]['HostPort']
+
+        consistent_hash_map.add_server(server_id, (hostname, host_port))
+
+    # Get the updated replicas after addition
+    replicas = list(consistent_hash_map.servers.keys())
+    response_data = {
+        "message": {
+            "N": len(replicas),
+            "replicas": [consistent_hash_map.servers[server_id][0].name for server_id in replicas]
+        },
+        "status": "successful"
+    }
+    return Response(content=json.dumps(response_data), media_type="application/json")
+
+@app.delete("/rm")
+async def remove_replicas(payload: dict):
+    n = payload.get("n", 0)
+    hostnames = payload.get("hostnames", [])
+
+    # Sanity check: Ensure 'n' is a positive integer
+    if not isinstance(n, int) or n <= 0:
+        raise HTTPException(status_code=400, detail="'n' must be a positive integer")
+
+    # Log the hostnames provided in the payload
+    print("Hostnames to remove:", hostnames)
+
+    # Convert all server names to lowercase and strip leading/trailing whitespaces
+    server_names = {server_name.strip().lower(): server_id for server_id, (server_name, _) in consistent_hash_map.servers.items()}
+
+    # Check if the total number of hostnames matches the specified count 'n'
+    if len(hostnames) != n:
+        raise HTTPException(status_code=400, detail=f"The number of hostnames provided ({len(hostnames)}) does not match the specified count ({n})")
+
+    # Check each individual hostname to ensure it exists in the consistent hash map
+    server_ids_to_remove = []
+    for hostname in hostnames:
+        stripped_hostname = hostname.strip().lower()
+        server_id = server_names.get(stripped_hostname)
+        if server_id is None:
+            raise HTTPException(status_code=404, detail=f"Server '{stripped_hostname}' specified for removal is not found")
+        server_ids_to_remove.append(server_id)
+
+    # Log the filtered server IDs
+    print("Filtered Server IDs to remove:", server_ids_to_remove)
+
+    # Get the server IDs to remove based on the provided hostnames
+    server_ids_to_remove = [
+        server_id for server_id, (container_name, _) in consistent_hash_map.servers.items()
+        if container_name in hostnames
+    ]
+
+    # Remove the servers from the consistent hash map
+    for server_id in server_ids_to_remove:
+        consistent_hash_map.remove_server(server_id)
+
+
+    # Get the remaining replicas after removal
+    replicas = list(consistent_hash_map.servers.keys())
+    response_data = {
+        "message": {
+            "N": len(replicas),
+            "replicas": [f"Server {server_id}" for server_id in replicas]
+        },
+        "status": "successful"
+    }
+    return Response(content=json.dumps(response_data), media_type="application/json")
+
+
+
+
+# ...
+
+@app.get("/{path:path}")
+async def route_request(path: str):
+    # Generate a random request ID for demonstration purposes
+    import random
+    request_id = random.randint(100000, 999999)
+
+    # Get the server ID using consistent hashing
+    server_id = consistent_hash_map.get_server(request_id)
+
+    if server_id is None:
+        response_data = {
+            "message": "<Error> No server available to handle the request",
+            "status": "failure"
+        }
+        return Response(content=json.dumps(response_data), media_type="application/json", status_code=503)
+
+    # Get the server container name and port
+    container_name, _, container_port = consistent_hash_map.servers[server_id]
+
+    # Check if the server is available by sending a heartbeat request
+    server_url = f"http://{container_name}:{container_port}/heartbeat"
+    try:
+        response = requests.get(server_url)
+        if response.status_code == 200:
+            # Server is available, route the request
+            request_url = f"http://{container_name}:{container_port}/{path}"
+            response = requests.get(request_url)
+
+            if path == "home":
+                # Return the response from the server's /home endpoint
+                return Response(content=response.content, media_type=response.headers['Content-Type'], status_code=response.status_code)
+            else:
+                # Return an error for endpoints not registered with the web server
+                response_data = {
+                    "message": f"<Error> '/{path}' endpoint does not exist in server replicas",
+                    "status": "failure"
+                }
+                return Response(content=json.dumps(response_data), media_type="application/json", status_code=400)
+        else:
+            # Server is unavailable
+            response_data = {
+                "message": f"<Error> Server {container_name} is unavailable",
+                "status": "failure"
+            }
+            return Response(content=json.dumps(response_data), media_type="application/json", status_code=503)
+    except requests.exceptions.RequestException as e:
+        # Error connecting to the server
+        response_data = {
+            "message": f"<Error> Failed to connect to server {container_name}: {str(e)}",
+            "status": "failure"
+        }
+        return Response(content=json.dumps(response_data), media_type="application/json", status_code=503)
