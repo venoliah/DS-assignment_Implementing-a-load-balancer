@@ -16,8 +16,8 @@ COPY load_balancer.py .
 
 COPY consistent_hash.py .
 
-# Expose the port on which the load balancer will run (e.g., port 5000)
-EXPOSE 5000
+# Expose the port on which the load balancer will run (e.g., port 80)
+EXPOSE 80
 
 # Run the load balancer when the container starts
-CMD ["uvicorn", "load_balancer:app", "--host", "0.0.0.0", "--port", "5000"]
+CMD ["uvicorn", "load_balancer:app", "--host", "0.0.0.0", "--port", "80"]
