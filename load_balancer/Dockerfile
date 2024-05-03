@@ -3,7 +3,7 @@ FROM python:3.9
 WORKDIR /app
 
 # Install Python packages using pip
-RUN pip install fastapi uvicorn docker
+RUN pip install fastapi uvicorn docker aiohttp
 
 # Copy the requirements file to the working directory
 COPY requirements.txt .
