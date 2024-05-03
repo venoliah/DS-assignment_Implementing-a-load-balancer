@@ -4,7 +4,7 @@ services:
       context: ./load_balancer
       dockerfile: Dockerfile
     ports:
-      - "80:80"
+      - "8080:8080"
     depends_on:
       - server1
       - server2
